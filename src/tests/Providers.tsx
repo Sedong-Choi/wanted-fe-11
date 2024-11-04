@@ -1,11 +1,15 @@
 import { ReactNode } from "react";
-import { RouterProvider } from 'react-router-dom'
-import { router } from "router";
+import { RouterProvider, createMemoryRouter } from 'react-router-dom'
+import { routerConfig } from "router";
 
-export const Providers = ({ children }: { children: ReactNode }) => {
-
+export function Providers({ children }: { children: ReactNode }) {
+    const router = createMemoryRouter(routerConfig, {
+        initialEntries: ['/']
+    })
     return <>
         <RouterProvider router={router} />
         {children}
     </>
 };
+
+export function clearCache() { }

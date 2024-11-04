@@ -3,7 +3,7 @@ import { LoginPage } from "../pages/Login";
 import App from "../App";
 import { SignUpPage } from "../pages/SignUp";
 
-export const router = createBrowserRouter([
+export const routerConfig = [
     {
         path: "/",
         element: <App/>,
@@ -16,4 +16,5 @@ export const router = createBrowserRouter([
         path: "/auth/signup",
         element: <SignUpPage/>,
     }
-]);
+];
+export const router = createBrowserRouter(routerConfig);
