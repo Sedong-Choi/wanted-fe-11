@@ -3,7 +3,7 @@ import { FormLayout } from "./FormLayout"
 
 export const SignUpPage = () => <FormLayout>
     <Card sx={{ width: 'min(300px,100vw)' }}>
-        <CardHeader title="Sign Up" />
+        <CardHeader title="Sign Up Todo" />
         <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }} >
             <TextField id="user-id" label="Id" />
             <TextField id="user-password" label="Password" />
