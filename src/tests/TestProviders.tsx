@@ -1,3 +1,4 @@
+import { AuthProvider } from "providers/AuthProvider";
 import { QueryProvider } from "providers/QueryProvider";
 import { SnackbarProvider } from "providers/SnackbarProvider";
 import { ReactNode } from "react";
@@ -12,10 +13,12 @@ export function TestProviders({ children }: { children: ReactNode }) {
         initialEntries: ['/']
     })
     return <QueryProvider>
-        <SnackbarProvider>
-            <RouterProvider router={router} />
-            {children}
-        </SnackbarProvider>
+        <AuthProvider>
+            <SnackbarProvider>
+                <RouterProvider router={router} />
+                {children}
+            </SnackbarProvider>
+        </AuthProvider>
     </QueryProvider>
 };
 
