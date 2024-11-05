@@ -2,7 +2,8 @@ import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 import { cleanup, configure, prettyDOM } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { clearCache } from './TestProviders';
-
+import { mockServer } from './mocks/mockServer';
+// import { mockAPI } from './mocks/mockAPI';
 
 configure({
   getElementError: (message: string | null, container) => {
@@ -21,10 +22,10 @@ configure({
 });
 
 beforeAll(() => {
+  mockServer.listen();
 });
 
 beforeEach(() => {
-
 });
 
 afterEach(() => {
@@ -33,5 +34,5 @@ afterEach(() => {
 });
 
 afterAll(() => {
- 
+
 });
