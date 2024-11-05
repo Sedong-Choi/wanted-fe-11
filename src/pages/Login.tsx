@@ -3,13 +3,15 @@ import { FormLayout } from "./FormLayout"
 import { useQueryClient } from "@tanstack/react-query";
 
 import { useNavigate } from "react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSnackbar } from "providers/SnackbarProvider";
+import { useAuth } from "providers/AuthProvider";
 export const LoginPage = () => {
-    
+    const { token, setUser } = useAuth();
     const { setMessage } = useSnackbar();
-    const queryClient = useQueryClient();
     const navigate = useNavigate();
+
+    const queryClient = useQueryClient();
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -17,8 +19,10 @@ export const LoginPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const token = queryClient.getQueryData(['userToken']);
+
         if (token) {
+            setUser((prev) => ({ ...prev, email, token }));
+            setMessage("성공적으로 로그인 했습니다");
             navigate('/');
             return;
         }
@@ -47,13 +51,6 @@ export const LoginPage = () => {
         setMessage(result.message);
         navigate('/');
     };
-
-    useEffect(() => {
-        if (error) {
-            setEmail('');
-            setPassword('');
-        }
-    }, [error]);
 
     return <FormLayout>
         <form onSubmit={handleLogin}>

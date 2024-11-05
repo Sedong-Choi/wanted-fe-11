@@ -4,13 +4,21 @@ import { useSignUpForm } from "hooks/useSignUpForm";
 import { useSnackbar } from "providers/SnackbarProvider";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "providers/AuthProvider";
 
 export const SignUpPage = () => {
+    const { token, setUser } = useAuth();
 
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
 
     const { setMessage } = useSnackbar();
+
+    if (token) {
+        setMessage("성공적으로 로그인 했습니다")
+        navigate('/');
+    }
+
+    const queryClient = useQueryClient();
 
     const {
         id,
@@ -49,6 +57,9 @@ export const SignUpPage = () => {
 
         const result = await response.json();
         queryClient.setQueryData(['userToken'], result.token);
+        
+        setUser((prev) => ({ ...prev, email: id, token: result.token }));
+        
         setMessage(result.message);
         navigate('/');
     };
