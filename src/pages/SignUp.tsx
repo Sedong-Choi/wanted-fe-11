@@ -1,6 +1,7 @@
 import { Button, Card, CardActions, CardContent, CardHeader, Divider, TextField, Typography } from "@mui/material"
 import { FormLayout } from "./FormLayout"
 import { useSignUpForm } from "hooks/useSignUpForm";
+import { useCallback } from "react";
 
 export const SignUpPage = () => {
 
@@ -16,6 +17,29 @@ export const SignUpPage = () => {
         errorConfirm,
         disabled
     } = useSignUpForm();
+
+    const handleSignup = useCallback(async () => {
+        if (!disabled) {
+            const response = await fetch('http://localhost:8080/users/create', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: id,
+                    password: password // todo encrypt
+                }),
+
+            });
+
+            const result = await response.json();
+            if (result.message === '계정이 성공적으로 생성되었습니다') {
+                // TODO use tanstack query persist
+                window.localStorage.setItem(`${id}_token`, result.token);
+                // TODO open global snakbar and redirect main page
+            }
+        }
+    }, [disabled, id, password]);
 
 
     return (<FormLayout>
@@ -40,7 +64,7 @@ export const SignUpPage = () => {
             </CardContent>
             <Divider />
             <CardActions sx={{ display: "flex", flexDirection: 'row', padding: '16px' }}>
-                <Button variant="contained" sx={{ flex: 1 }} disabled={disabled}>
+                <Button variant="contained" sx={{ flex: 1 }} disabled={disabled} onClick={handleSignup}>
                     Sign Up
                 </Button>
             </CardActions>
