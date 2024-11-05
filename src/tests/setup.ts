@@ -1,7 +1,7 @@
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 import { cleanup, configure, prettyDOM } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { clearCache } from './Providers';
+import { clearCache } from './TestProviders';
 
 
 configure({
