@@ -1,7 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { createContext, useContext, useState } from "react"
 import Snackbar from '@mui/material/Snackbar';
-import React from 'react';
 type SnackbarData = {
     open: () => void;
     close?: () => void;
@@ -17,7 +16,7 @@ const initSnackbarData = {
 
 const SnackBarContext = createContext<SnackbarData>(initSnackbarData);
 
-export const SnakbarProvider = ({ children }: PropsWithChildren) => {
+export const SnackbarProvider = ({ children }: PropsWithChildren) => {
     const [open, setOpen] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
     const [duration, setDuration] = useState<number>(3000);
