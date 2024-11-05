@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useSnackbar } from "providers/SnackbarProvider";
 export const LoginPage = () => {
     
-    const { open, setMessage } = useSnackbar();
+    const { setMessage } = useSnackbar();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
@@ -34,20 +34,17 @@ export const LoginPage = () => {
             const result = await response.json();
             setError(result.message ?? result.details ?? '');
             setMessage(result.message ?? result.details ?? '');
-            open();
             return;
         }
         if (!response.ok) {
             setError("서버 오류");
             setMessage("서버 오류");
-            open();
             return;
         }
 
         const result = await response.json();
         queryClient.setQueryData(['userToken'], result.token);
         setMessage(result.message);
-        open();
         navigate('/');
     };
 

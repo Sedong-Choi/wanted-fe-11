@@ -9,9 +9,9 @@ export const SignUpPage = () => {
 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    
-    const { open, setMessage } = useSnackbar();
-    
+
+    const { setMessage } = useSnackbar();
+
     const {
         id,
         setId,
@@ -27,6 +27,7 @@ export const SignUpPage = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
+
         const response = await fetch('http://localhost:8080/users/create', {
             method: "POST",
             headers: {
@@ -35,23 +36,20 @@ export const SignUpPage = () => {
             body: JSON.stringify({ email: id, password }),
         });
 
-        if (response.status === 409) {
+        if (response.status !== 200) {
             const result = await response.json();
             setMessage(result.details);
-            open();
             return;
         }
 
         if (!response.ok) {
             setMessage("서버 오류");
-            open();
             return;
         }
 
         const result = await response.json();
         queryClient.setQueryData(['userToken'], result.token);
         setMessage(result.message);
-        open();
         navigate('/');
     };
 
