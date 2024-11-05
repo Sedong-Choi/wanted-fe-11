@@ -8,7 +8,7 @@ export const useSignUpForm = () => {
     const [confirmPass, setConfirmPass] = useState('');
 
     const errorConfirm = useMemo(() => {
-        if (password !== confirmPass) {
+        if (confirmPass !== '' && password !== confirmPass) {
             return "Passwords do not match";
         }
         return "";
