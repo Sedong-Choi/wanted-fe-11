@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useFormValidate } from "./useFormValidate";
 
-export const useSignUp = () => {
+export const useSignUpForm = () => {
     const [id, setId, errorId] = useFormValidate('email');
     const [password, setPassword, errorPassword] = useFormValidate('password');
 
@@ -14,7 +14,7 @@ export const useSignUp = () => {
         return "";
     }, [confirmPass, password]);
 
-    const disabled =!( id !== ''
+    const disabled = !(id !== ''
         && password !== ''
         && confirmPass !== ''
         && errorId === ''

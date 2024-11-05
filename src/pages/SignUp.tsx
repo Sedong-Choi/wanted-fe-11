@@ -1,6 +1,6 @@
 import { Button, Card, CardActions, CardContent, CardHeader, Divider, TextField, Typography } from "@mui/material"
 import { FormLayout } from "./FormLayout"
-import { useSignUp } from "hooks/useSignUp";
+import { useSignUpForm } from "hooks/useSignUpForm";
 
 export const SignUpPage = () => {
 
@@ -15,10 +15,9 @@ export const SignUpPage = () => {
         setConfirmPass,
         errorConfirm,
         disabled
-    } = useSignUp();
+    } = useSignUpForm();
 
 
-   
     return (<FormLayout>
         <Card sx={{ width: 'min(300px,100vw)' }}>
             <CardHeader title="Sign Up Todo" />
