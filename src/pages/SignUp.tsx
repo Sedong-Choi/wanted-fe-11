@@ -3,27 +3,24 @@ import { FormLayout } from "./FormLayout"
 import { useSignUpForm } from "hooks/useSignUpForm";
 import { useSnackbar } from "providers/SnackbarProvider";
 import { useNavigate } from "react-router";
-import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "providers/AuthProvider";
 
 export const SignUpPage = () => {
-    const { token, setUser } = useAuth();
+    const { isLogin, login } = useAuth();
 
     const navigate = useNavigate();
 
     const { setMessage } = useSnackbar();
 
-    if (token) {
+    if (isLogin) {
         setMessage("성공적으로 로그인 했습니다")
         navigate('/');
     }
 
-    const queryClient = useQueryClient();
-
     const {
-        id,
-        setId,
-        errorId,
+        email,
+        setEmail,
+        errorEmail,
         password,
         setPassword,
         errorPassword,
@@ -41,7 +38,7 @@ export const SignUpPage = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email: id, password }),
+            body: JSON.stringify({ email, password }),
         });
 
         if (response.status !== 200) {
@@ -56,10 +53,8 @@ export const SignUpPage = () => {
         }
 
         const result = await response.json();
-        queryClient.setQueryData(['userToken'], result.token);
-        
-        setUser((prev) => ({ ...prev, email: id, token: result.token }));
-        
+
+        login(email, result.token);
         setMessage(result.message);
         navigate('/');
     };
@@ -71,10 +66,10 @@ export const SignUpPage = () => {
                 <CardHeader title="Sign Up Todo" />
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }} >
 
-                    <TextField id="user-id" label="Id" value={id} onChange={(e) => setId(e.target.value)} />
+                    <TextField id="user-id" label="Id" value={email} onChange={(e) => setEmail(e.target.value)} />
                     {
-                        errorId !== ''
-                        && <Typography color="red">{errorId}</Typography>
+                        errorEmail !== ''
+                        && <Typography color="red">{errorEmail}</Typography>
                     }
                     <TextField id="user-password" label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     {

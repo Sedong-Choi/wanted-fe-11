@@ -1,17 +1,14 @@
 import { Button, Card, CardActions, CardContent, CardHeader, Divider, TextField, Typography } from "@mui/material"
 import { FormLayout } from "./FormLayout"
-import { useQueryClient } from "@tanstack/react-query";
 
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { useSnackbar } from "providers/SnackbarProvider";
 import { useAuth } from "providers/AuthProvider";
 export const LoginPage = () => {
-    const { token, setUser } = useAuth();
+    const { login } = useAuth();
     const { setMessage } = useSnackbar();
     const navigate = useNavigate();
-
-    const queryClient = useQueryClient();
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -19,9 +16,9 @@ export const LoginPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        const checkLogin = login(email);
 
-        if (token) {
-            setUser((prev) => ({ ...prev, email, token }));
+        if (checkLogin) {
             setMessage("성공적으로 로그인 했습니다");
             navigate('/');
             return;
@@ -47,7 +44,7 @@ export const LoginPage = () => {
         }
 
         const result = await response.json();
-        queryClient.setQueryData(['userToken'], result.token);
+        login(email,result.token);
         setMessage(result.message);
         navigate('/');
     };
