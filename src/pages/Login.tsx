@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useSnackbar } from "providers/SnackbarProvider";
 import { useAuth } from "providers/AuthProvider";
 export const LoginPage = () => {
-    const { login } = useAuth();
+    const { tokenExists, login } = useAuth();
     const { setMessage } = useSnackbar();
     const navigate = useNavigate();
 
@@ -16,14 +16,12 @@ export const LoginPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const checkLogin = login(email);
 
-        if (checkLogin) {
-            setMessage("성공적으로 로그인 했습니다");
+
+        if (tokenExists(email)) {
             navigate('/');
             return;
         }
-
         const response = await fetch('http://localhost:8080/users/login', {
             method: "POST",
             headers: {
@@ -44,8 +42,7 @@ export const LoginPage = () => {
         }
 
         const result = await response.json();
-        login(email,result.token);
-        setMessage(result.message);
+        login({ email, token: result.token }, result.message);
         navigate('/');
     };
 
