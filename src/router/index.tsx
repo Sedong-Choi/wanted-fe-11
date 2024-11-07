@@ -1,25 +1,40 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouteObject } from "react-router-dom";
 import { LoginPage } from "../pages/Login";
 import { SignUpPage } from "../pages/SignUp";
 import { Main } from "pages/Main";
+import { Layout } from "pages/Layout";
+type NavName = string;
+export type RouteChildren = RouteObject & {
+    name?: NavName
+    children?: Record<NavName, RouteChildren>[]
+}
+type CustomRouteObject = RouteObject & RouteChildren;
 
-export const routerConfig = [
+export const routerConfig: CustomRouteObject[] = [
     {
         path: "/",
-        element: <Main />,
-    },
-    {
-        path: "/auth",
+        element: <Layout />,
         children: [
             {
-                path: 'login',
-                element: <LoginPage />,
+                path: "/",
+                name: "Main",
+                element: <Main />,
             },
             {
-                path: "signup",
-                element: <SignUpPage />,
-            }
-        ]
-    },
+                path: "/auth",
+                children: [
+                    {
+                        path: 'login',
+                        name: "Login",
+                        element: <LoginPage />,
+                    },
+                    {
+                        path: "signup",
+                        name: "Sign Up",
+                        element: <SignUpPage />,
+                    }
+                ]
+            },]
+    }
 ];
 export const router = createBrowserRouter(routerConfig);
