@@ -1,25 +1,65 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react"
+import { useQueryClient } from "@tanstack/react-query";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react"
 
+type AuthState = {
+    isLogin: boolean;
+    login: (email: string, token?: string) => boolean;
+    logout: () => void;
+}
 interface User {
-    email: string;
-    token?: string;
+    email: string | null;
+    token: string | null;
 }
 
-interface UserState extends User {
-    setUser: Dispatch<SetStateAction<UserState>>;
-}
-
-const initialUserState: UserState = {
-    email: "",
-    token: "",
-    setUser: () => { }
+const initialAuthState: AuthState = {
+    isLogin: false,
+    login: (_email: string, _token?: string) => false,
+    logout: () => { },
 };
-const AuthContext = createContext<UserState>(initialUserState)
+const AuthContext = createContext<AuthState>(initialAuthState)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
-    const [user, setUser] = useState<UserState>(initialUserState)
+    const [user, setUser] = useState<User>({ email: null, token: null });
+    const queryClient = useQueryClient();
 
-    return <AuthContext.Provider value={{ ...user, setUser }}>
+    const handleLogin = useCallback((newEmail: string, token?: string) => {
+        const oldUserData = queryClient.getQueryData(['userData']) as User;
+
+        if (oldUserData && token === undefined) {
+            const { email, token } = oldUserData;
+            if (newEmail === email) {
+                setUser({ email: newEmail, token });
+            }
+            return true;
+        }
+        if (newEmail !== '' && token !== undefined) {
+            setUser({ email: newEmail, token });
+            queryClient.setQueryData(['userData'], { email: newEmail, token });
+            return true;
+        }
+
+        return false;
+    }, [queryClient]);
+
+    const handleLogout = useCallback(() => {
+        setUser({ email: null, token: null });
+        queryClient.setQueryData(['userData'], null);
+    }, [queryClient]);
+
+    // on mount
+    useEffect(() => {
+        const cacheData = queryClient.getQueryData(['userData']) as User;
+        if (cacheData !== undefined) {
+            setUser({ email: cacheData.email, token: cacheData.token });
+        }
+    }, []);
+
+    return <AuthContext.Provider
+        value={{
+            isLogin: user.email !== null && user.token !== null,
+            login: (email: string, token?: string) => handleLogin(email, token),
+            logout: () => handleLogout()
+        }}>
         {children}
     </AuthContext.Provider>
 }
