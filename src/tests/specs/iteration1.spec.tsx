@@ -30,7 +30,7 @@ describe('routing test', () => {
         renderWithProviders();
         await screen.findByText(/App main/);
 
-        const loginButton = await screen.findByText(/Login page/);
+        const loginButton = await screen.findByText(/Login/);
 
         const user = userEvent.setup();
 
@@ -43,7 +43,7 @@ describe('routing test', () => {
         renderWithProviders();
         await screen.findByText(/App main/);
 
-        const signUpBotton = await screen.findByText(/Sign Up page/);
+        const signUpBotton = await screen.findByText(/Sign Up/);
 
         const user = userEvent.setup();
 
@@ -57,7 +57,7 @@ describe('Sign Up Form validate', () => {
     beforeEach(async () => {
         renderWithProviders();
         const user = userEvent.setup();
-        const signUpBotton = await screen.findByText(/Sign Up page/);
+        const signUpBotton = await screen.findByText(/Sign Up/);
         await user.click(signUpBotton);
 
         await screen.findByText(/Sign Up Todo/);
@@ -152,8 +152,7 @@ describe('Sign up with server', () => {
         // renderWithProviders 사용안함
         const { result } = renderHook(() => useQueryClient(), { wrapper: TestProviders });
 
-
-        const signUpBotton = await screen.findByText(/Sign Up page/);
+        const signUpBotton = await screen.findByText(/Sign Up/);
 
         const user = userEvent.setup();
 
