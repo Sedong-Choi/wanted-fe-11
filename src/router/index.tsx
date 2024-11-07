@@ -3,8 +3,10 @@ import { LoginPage } from "../pages/Login";
 import { SignUpPage } from "../pages/SignUp";
 import { Main } from "pages/Main";
 import { Layout } from "pages/Layout";
+import { Logout } from "pages/Logout";
 type NavName = string;
 export type RouteChildren = RouteObject & {
+    protect?: boolean;
     name?: NavName
     children?: Record<NavName, RouteChildren>[]
 }
@@ -21,6 +23,12 @@ export const routerConfig: CustomRouteObject[] = [
                 element: <Main />,
             },
             {
+                path:"/todos",
+                name:"Todos",
+                protect:true,
+                element:<><h1>TODO List</h1></>
+            },
+            {
                 path: "/auth",
                 children: [
                     {
@@ -32,9 +40,18 @@ export const routerConfig: CustomRouteObject[] = [
                         path: "signup",
                         name: "Sign Up",
                         element: <SignUpPage />,
+
+                    },
+                    {
+                        path: 'logout',
+                        name: 'Logout',
+                        protect: true,
+                        element: <Logout />
                     }
                 ]
-            },]
+            },
+
+        ]
     }
 ];
 export const router = createBrowserRouter(routerConfig);
