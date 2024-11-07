@@ -1,6 +1,6 @@
 import { Container, CssBaseline } from "@mui/material"
 import { Providers } from "Providers"
-import { RouterProvider } from "react-router-dom"
+import { RouterProvider } from "react-router"
 import { router } from "router"
 
 function App() {
