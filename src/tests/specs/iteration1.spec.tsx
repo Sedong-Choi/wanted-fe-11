@@ -139,8 +139,6 @@ describe('Sign Up Form validate', () => {
     });
 });
 
-// TODO mock server 생성하는 방식으로 변경 필요
-
 describe('Sign up with server', () => {
     mockServer.use(
         mockAPI.post('http://localhost:8080/users/create', {
@@ -189,5 +187,45 @@ describe('Sign up with server', () => {
 
         await screen.findByText(/App main/);
         expect(screen.getByText(/App main/)).toBeInTheDocument();
+    });
+});
+
+describe('Login', () => {
+    mockServer.use(
+        mockAPI.post('http://localhost:8080/users/login', {
+            token: 'test_token', message: '성공적으로 로그인 했습니다'
+        })
+    );
+    test('Basic login test', async () => {
+        const { result } = renderHook(() => useQueryClient(), { wrapper: TestProviders });
+
+        const navLoginBotton = await screen.findByText(/Login/);
+
+        const user = userEvent.setup();
+        // main page to login page
+        await user.click(navLoginBotton);
+        expect(screen.getByText(/Login Todo/)).toBeInTheDocument();
+
+        const userEmail = 'test@test.ts';
+        // fill user data
+        const idInput = screen.getByRole('textbox', { name: 'Id' });
+        await userEvent.type(idInput, userEmail);
+
+
+        const passwordInput = screen.getByLabelText('Password');
+        await userEvent.type(passwordInput, '12341234');
+
+        const loginButton = await screen.findByRole('button', { name: "Login" });
+        expect(loginButton).toBeEnabled();
+
+        await user.click(loginButton);
+        await screen.findByText('성공적으로 로그인 했습니다');
+        await screen.findByText(/App main/);
+        expect(screen.getByText(/App main/)).toBeInTheDocument();
+
+        //check token
+        const queryClient = result.current;
+        const token = queryClient.getQueryData(['userData', userEmail]);
+        expect(token === 'test_token').toBe(true);
     });
 });

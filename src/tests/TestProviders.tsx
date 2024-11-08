@@ -13,12 +13,12 @@ export function TestProviders({ children }: { children: ReactNode }) {
         initialEntries: ['/']
     })
     return <QueryProvider>
-        <AuthProvider>
-            <SnackbarProvider>
+        <SnackbarProvider>
+            <AuthProvider>
                 <RouterProvider router={router} />
                 {children}
-            </SnackbarProvider>
-        </AuthProvider>
+            </AuthProvider>
+        </SnackbarProvider>
     </QueryProvider>
 };
 

@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         const cachedUserData = queryClient.getQueryData(['userData', email]) as string;
         if (cachedUserData) {
-            handleLogin({ email, token: cachedUserData }, "로그인이 완료되었습니다");
+            handleLogin({ email, token: cachedUserData }, "성공적으로 로그인 했습니다");
             return true;
         }
 
