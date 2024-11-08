@@ -191,7 +191,7 @@ describe('Sign up with server', () => {
 });
 
 describe('Login', () => {
-    beforeEach( ()=>{
+    beforeEach(() => {
         mockServer.use(
             mockAPI.post('http://localhost:8080/users/login', {
                 token: 'test_token', message: '성공적으로 로그인 했습니다'
@@ -267,5 +267,69 @@ describe('Login', () => {
         await screen.findByText('성공적으로 로그인 했습니다');
         await screen.findByText(/App main/);
         expect(screen.getByText(/App main/)).toBeInTheDocument();
+    });
+});
+
+describe('Invalid token error - logout and redirect to login page', () => {
+    test.only('Missing token - network error', async () => {
+        mockServer.use(
+            mockAPI.get('http://localhost:8080/todos',
+                {
+                    details: 'Token is missing'
+                },
+                401
+            )
+        )
+        const { result } = renderHook(() => useQueryClient(), { wrapper: TestProviders });
+
+        const userEmail = 'test@test.ts';
+        const tokenValue = 'local_token';
+        // setting token
+        const queryClient = result.current;
+
+        queryClient.setQueryData(['userData', userEmail], tokenValue);
+
+        // main to login page
+        const navLoginBotton = await screen.findByText(/Login/);
+
+        const user = userEvent.setup();
+        // main page to login page
+        await user.click(navLoginBotton);
+        expect(screen.getByText(/Login Todo/)).toBeInTheDocument();
+
+        // fill user data
+        const idInput = screen.getByRole('textbox', { name: 'Id' });
+        await userEvent.type(idInput, userEmail);
+        const passwordInput = screen.getByLabelText('Password');
+        await userEvent.type(passwordInput, '12341234');
+
+        const loginButton = await screen.findByRole('button', { name: "Login" });
+        expect(loginButton).toBeEnabled();
+
+        // check user token logic
+        // Login API not called
+        await user.click(loginButton);
+        const token = queryClient.getQueryData(['userData', userEmail]);
+        expect(token === tokenValue).toBe(true);
+
+        await screen.findByText('성공적으로 로그인 했습니다');
+        await screen.findByText(/App main/);
+        expect(screen.getByText(/App main/)).toBeInTheDocument();
+
+        // to todos page
+        const todosButton = await screen.findByRole('link', {
+            name: 'Todos'
+        });
+
+        await userEvent.click(todosButton);
+        
+        // error response
+        await screen.findByText(/Network response was not ok/);
+        expect(screen.getByText(/Network response was not ok/)).toBeInTheDocument();
+
+        // redirect login page
+        await screen.findByText(/Login Todo/);
+        expect(screen.getByText(/Login Todo/)).toBeInTheDocument();
+
     });
 });
