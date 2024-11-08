@@ -4,6 +4,7 @@ import { SignUpPage } from "../pages/SignUp";
 import { Main } from "pages/Main";
 import { Layout } from "pages/Layout";
 import { Logout } from "pages/Logout";
+import { Todos } from "pages/Todos";
 type NavName = string;
 export type RouteChildren = RouteObject & {
     protect?: boolean;
@@ -23,10 +24,10 @@ export const routerConfig: CustomRouteObject[] = [
                 element: <Main />,
             },
             {
-                path:"/todos",
-                name:"Todos",
-                protect:true,
-                element:<><h1>TODO List</h1></>
+                path: "/todos",
+                name: "Todos",
+                protect: true,
+                element: <Todos />
             },
             {
                 path: "/auth",
