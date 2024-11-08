@@ -54,7 +54,7 @@ export const SignUpPage = () => {
 
         const result = await response.json();
 
-        login(email, result.token);
+        login({ email, token: result.token });
         setMessage(result.message);
         navigate('/');
     };
