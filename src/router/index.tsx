@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouteObject } from "react-router-dom";
+import { RouteObject } from "react-router-dom";
 import { LoginPage } from "../pages/Login";
 import { SignUpPage } from "../pages/SignUp";
 import { Main } from "pages/Main";
@@ -6,12 +6,11 @@ import { Layout } from "pages/Layout";
 import { Logout } from "pages/Logout";
 import { Todos } from "pages/Todos";
 type NavName = string;
-export type RouteChildren = RouteObject & {
+export type CustomRouteObject = RouteObject & {
     protect?: boolean;
     name?: NavName
-    children?: Record<NavName, RouteChildren>[]
+    children?: CustomRouteObject[]
 }
-type CustomRouteObject = RouteObject & RouteChildren;
 
 export const routerConfig: CustomRouteObject[] = [
     {
@@ -51,8 +50,6 @@ export const routerConfig: CustomRouteObject[] = [
                     }
                 ]
             },
-
         ]
     }
 ];
-export const router = createBrowserRouter(routerConfig);

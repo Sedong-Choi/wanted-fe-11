@@ -2,10 +2,12 @@ import { useAuth } from 'providers/AuthProvider';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-import { RouteChildren, routerConfig } from 'router';
+
+import { CustomRouteObject, routerConfig } from 'router';
 
 export const NavigationBar = () => {
     const { isLogin } = useAuth();
+
     const routerList: RouteItem[] = useMemo(() => {
         return getRouteItems(isLogin, routerConfig);
     }, [isLogin]);
@@ -27,7 +29,7 @@ type RouteItem = {
     path: string
 }
 
-function getRouteItems(isLogin: boolean, children: RouteChildren[], parentPath?: string): RouteItem[] {
+function getRouteItems(isLogin: boolean, children: CustomRouteObject[], parentPath?: string): RouteItem[] {
     const paths = [];
     for (const route of children) {
         if (route.children) {
