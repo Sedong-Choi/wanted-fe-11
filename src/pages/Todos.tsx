@@ -5,30 +5,12 @@ import { useFetcher } from "hooks/useFetcher";
 import { Button, TextField, TextareaAutosize } from "@mui/material";
 import { TodoRow } from "components/TodoRow";
 
-const useTodos = (fetcher: () => Promise<any>) => {
-    return useQuery({
-        queryKey: ['get', 'todos'],
-        queryFn: () => fetcher(),
-    })
-}
 
 export const Todos = () => {
-
-    const fetcher = useFetcher('/todos', 'GET');
-
-    const { data, error, isLoading } = useTodos(fetcher);
-
-    if (isLoading || !data) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
-
     return (
         <>
             <AddTodo />
-            {
-                data.data
-                && data.data.map((todo: any, index: number) =>
-                    <TodoRow key={todo.id} todo={todo} />)
-            }
+            <TodoList />
         </>
     );
 }
@@ -87,4 +69,26 @@ const AddTodo = () => {
         </div>
         <Button style={{ flexShrink: 0 }} color="primary" size='large' title="Add Todo" onClick={handleAddTodo} >Add Todo</Button>
     </div>
+}
+
+
+
+const TodoList = () => {
+    const { userData } = useAuth();
+    const fetcher = useFetcher('/todos', 'GET');
+    const { data, error, isLoading } = useQuery({
+        queryKey: ['get', 'todos'],
+        queryFn: () => fetcher(),
+        enabled: !!userData.token
+    });
+    if (isLoading || !data) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
+    return <>
+        {
+            data.data
+            && data.data.map((todo: any) =>
+                <TodoRow key={todo.id} todo={todo} />)
+        }
+    </>
 }
