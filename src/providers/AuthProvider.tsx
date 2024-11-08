@@ -4,15 +4,13 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useState 
 import { useSnackbar } from "./SnackbarProvider";
 
 type AuthState = {
-    error?: string,
-    setError?: (message: string) => void;
+    error: string,
+    setError: (message: string) => void;
     isLogin: boolean;
     login: ({ email, token }: { email: string, token: string }, message?: string) => void;
     logout: () => void;
     tokenExists: (email: string) => boolean;
-    userData: {
-        email: string
-    }
+    userData: User
 }
 interface User {
     email: string | null;
@@ -25,8 +23,11 @@ const initialAuthState: AuthState = {
     logout: () => { },
     tokenExists: (_email: string) => false,
     userData: {
-        email: ''
-    }
+        email: '',
+        token: '',
+    },
+    setError: () => { },
+    error: '',
 };
 const AuthContext = createContext<AuthState>(initialAuthState)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -140,6 +141,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [isLoaded, queryClient, mounted, isLogin, user]);
 
+
+    // error 발생시 3초뒤에 error 삭제
+    useEffect(() => {
+        if (error) {
+            setTimeout(() => {
+                setError('')
+            }, 3000);
+        }
+    }, [error]);
+
     return <AuthContext.Provider
         value={{
             isLogin,
@@ -148,12 +159,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             error,
             setError: (message: string) => setError(message),
             tokenExists,
-            userData: {
-                email: user.email ?? ''
-            }
+            userData: user
         }}>
         {children}
     </AuthContext.Provider>
+
 }
 
 export const useAuth = () => {
