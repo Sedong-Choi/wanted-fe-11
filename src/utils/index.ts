@@ -13,3 +13,15 @@ export const routerFilterByAuth = (isLogin: boolean, routerConfig: CustomRouteOb
     }
     return result;
 }
+
+export const findRouter = (targetPath: string, routerConfig: CustomRouteObject[]): CustomRouteObject => {
+    for (const router of routerConfig) {
+        if (router.path === targetPath && router.protect) {
+            return router;
+        }
+        if (router.children) {
+            return findRouter(targetPath, router.children);
+        }
+    }
+    return {} as CustomRouteObject;
+}

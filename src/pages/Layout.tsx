@@ -1,13 +1,16 @@
 import { NavigationBar } from "components/NavigationBar"
 import { useAuth } from "providers/AuthProvider";
 import { useSnackbar } from "providers/SnackbarProvider";
-import { Suspense, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router"
-
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router"
+import { routerConfig } from 'router';
+import { findRouter } from "utils";
 export const Layout = () => {
+    const location = useLocation();
+
     const navigate = useNavigate();
 
-    const { error } = useAuth();
+    const { error, isLogin } = useAuth();
     const { setMessage } = useSnackbar();
 
     useEffect(() => {
@@ -17,10 +20,16 @@ export const Layout = () => {
         }
     }, [error, setMessage, navigate]);
 
+    useEffect(() => {
+        const target = findRouter(location.pathname, routerConfig);
+        if (!isLogin && target.protect === true) {
+            navigate('/auth/login');
+        }
+    }, [isLogin, location, navigate]);
+
+
     return <>
         <NavigationBar />
-        <Suspense fallback={<>Loading...</>}>
-            <Outlet />
-        </Suspense>
+        <Outlet />
     </>
 }
