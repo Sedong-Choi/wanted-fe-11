@@ -4,7 +4,7 @@ import { useSnackbar } from "providers/SnackbarProvider";
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router"
 import { routerConfig } from 'router';
-import { findRouter } from "utils";
+import { findRouter } from "helper";
 export const Layout = () => {
     const location = useLocation();
 
